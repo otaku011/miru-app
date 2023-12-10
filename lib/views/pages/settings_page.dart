@@ -12,6 +12,7 @@ import 'package:miru_app/controllers/settings_controller.dart';
 import 'package:miru_app/views/widgets/settings_input_tile.dart';
 import 'package:miru_app/views/widgets/settings_radios_tile.dart';
 import 'package:miru_app/views/widgets/settings_switch_tile.dart';
+import 'package:miru_app/views/widgets/settings_numberbox_button.dart';
 import 'package:miru_app/views/widgets/settings_tile.dart';
 import 'package:miru_app/utils/i18n.dart';
 import 'package:miru_app/utils/miru_storage.dart';
@@ -162,6 +163,59 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ),
         const SizedBox(height: 8),
+        SettingsTile(
+          icon: const PlatformWidget(
+            androidWidget: Icon(Icons.backup),
+            desktopWidget: Icon(fluent.FluentIcons.update_restore, size: 24),
+          ),
+          title: 'settings.backup'.i18n,
+          buildSubtitle: () => FlutterI18n.translate(
+            context,
+            'settings.backup-subtitle',
+            translationParams: {
+              'version': packageInfo.version,
+            },
+          ),
+          trailing: PlatformWidget(
+            androidWidget: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    ApplicationUtils.exportSaveFile(context);
+                  },
+                  child: Text('settings.export-file'.i18n),
+                ),
+                TextButton(
+                  onPressed: () {
+                    ApplicationUtils.importSaveFile(context);
+                  },
+                  child: Text('settings.import-file'.i18n),
+                )
+              ],
+            ),
+            desktopWidget: Row(children: [
+              fluent.FilledButton(
+                onPressed: () {
+                  ApplicationUtils.exportSaveFile(
+                    context,
+                  );
+                },
+                child: Text('settings.export-file'.i18n),
+              ),
+              const SizedBox(width: 16),
+              fluent.Button(
+                onPressed: () {
+                  ApplicationUtils.importSaveFile(
+                    context,
+                  );
+                },
+                child: Text('settings.import-file'.i18n),
+              )
+            ]),
+          ),
+        ),
+        const SizedBox(height: 8),
         SettingsSwitchTile(
           icon: const PlatformWidget(
             androidWidget: Icon(Icons.autorenew_sharp),
@@ -192,6 +246,7 @@ class _SettingsPageState extends State<SettingsPage> {
             'languages.ru'.i18n: 'ru',
             'languages.uk'.i18n: 'uk',
             'languages.hi'.i18n: 'hi',
+            'languages.zhHant'.i18n: 'zhHant',
           },
           buildSubtitle: () => 'settings.language-subtitle'.i18n,
           applyValue: (value) {
@@ -246,6 +301,31 @@ class _SettingsPageState extends State<SettingsPage> {
         const SizedBox(height: 8),
         SettingsRadiosTile(
           icon: const PlatformWidget(
+            androidWidget: Icon(Icons.chrome_reader_mode),
+            desktopWidget:
+                Icon(fluent.FluentIcons.reading_mode_solid, size: 24),
+          ),
+          title: 'settings.default-reader-mode'.i18n,
+          itemNameValue: () {
+            final map = {
+              'comic-settings.standard'.i18n: 'standard',
+              'comic-settings.right-to-left'.i18n: 'rightToLeft',
+              'comic-settings.web-tonn'.i18n: 'webTonn',
+            };
+            return map;
+          }(),
+          buildSubtitle: () =>
+              '${MiruStorage.getSetting(SettingKey.readingMode)}'.i18n,
+          applyValue: (value) {
+            MiruStorage.setSetting(SettingKey.readingMode, value);
+          },
+          buildGroupValue: () {
+            return MiruStorage.getSetting(SettingKey.readingMode);
+          },
+        ),
+        const SizedBox(height: 8),
+        SettingsRadiosTile(
+          icon: const PlatformWidget(
             androidWidget: Icon(Icons.play_arrow),
             desktopWidget: Icon(fluent.FluentIcons.play_resume, size: 24),
           ),
@@ -293,6 +373,88 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
               );
             },
+          ),
+        const SizedBox(height: 8),
+        if (!Platform.isAndroid)
+          fluent.Expander(
+            header: Row(
+              children: [
+                const Icon(fluent.FluentIcons.keyboard_classic, size: 24),
+                const SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("settings.skip-interval".i18n),
+                    const SizedBox(height: 2),
+                    Text(
+                      "settings.skip-interval-subtitle".i18n,
+                      style: const TextStyle(fontSize: 12),
+                    )
+                  ],
+                ),
+                const Spacer(),
+                const SizedBox(),
+              ],
+            ),
+            content: Column(
+              children: [
+                Row(children: [
+                  Expanded(
+                      child: SettingNumboxButton(
+                    title: "key I",
+                    button1text: "1s",
+                    button2text: "0.1s",
+                    onChanged: (value) {
+                      MiruStorage.setSetting(SettingKey.keyI, value ??= -10.0);
+                    },
+                    numberBoxvalue:
+                        MiruStorage.getSetting(SettingKey.keyI) ?? -10.0,
+                  )),
+                  const SizedBox(width: 30),
+                  Expanded(
+                      child: SettingNumboxButton(
+                    title: "key J",
+                    button1text: "1s",
+                    button2text: "0.1s",
+                    onChanged: (value) {
+                      MiruStorage.setSetting(SettingKey.keyJ, value ??= 10.0);
+                    },
+                    numberBoxvalue:
+                        MiruStorage.getSetting(SettingKey.keyJ) ?? 10.0,
+                  ))
+                ]),
+                const SizedBox(height: 8),
+                Row(children: [
+                  Expanded(
+                      child: SettingNumboxButton(
+                    title: "arrow left",
+                    icon: const Icon(fluent.FluentIcons.chevron_left_med),
+                    button1text: "1s",
+                    button2text: "0.1s",
+                    numberBoxvalue:
+                        MiruStorage.getSetting(SettingKey.arrowLeft) ?? 10.0,
+                    onChanged: (value) {
+                      MiruStorage.setSetting(
+                          SettingKey.arrowLeft, value ??= -2.0);
+                    },
+                  )),
+                  const SizedBox(width: 30),
+                  Expanded(
+                      child: SettingNumboxButton(
+                    title: "arrow right",
+                    icon: const Icon(fluent.FluentIcons.chevron_right_med),
+                    button1text: "1s",
+                    button2text: "0.1s",
+                    onChanged: (value) {
+                      MiruStorage.setSetting(
+                          SettingKey.arrowRight, value ??= 2);
+                    },
+                    numberBoxvalue:
+                        MiruStorage.getSetting(SettingKey.arrowRight) ?? 10.0,
+                  ))
+                ])
+              ],
+            ),
           ),
         const SizedBox(height: 8),
         ListTitle(title: 'settings.about'.i18n),

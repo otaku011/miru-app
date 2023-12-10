@@ -8,6 +8,7 @@
     "ryu": "うちなーぐち",
     "uk": "Українська",
     "zh": "中文",
+    "zhHant": "繁體中文",
     "hi": "हिंदी"
   },
 
@@ -99,13 +100,20 @@
     "language-subtitle": "Change the language of the software",
     "extension-log": "Extension Log Window",
     "extension-log-subtitle": "Used for debugging extensions",
+    "skip-interval": "Skip Interval",
+    "skip-interval-subtitle": "Skipping interval for builtin video player",
+    "default-reader-mode": "Default reader mode",
     "about": "About",
     "official-site": "Official Website",
     "official-site-training": "Visit",
     "source-code": "Open Source",
     "source-code-training": "Give Star",
     "license": "License",
-    "license-subtitle": "License"
+    "license-subtitle": "License",
+    "export-file":"Export",
+    "import-file":"Import",
+    "backup":"Backup",
+    "backup-subtitle":"Backup or restore data from local"
   },
 
   "external-player-launching": "Launching {player}",
@@ -208,5 +216,15 @@
     "stop": "Stop",
     "upgrade": "Upgrade",
     "start": "Start"
+  },
+  "backup": {
+    "import-unzip-success" : "recover success :",
+    "import-unzip-success-sub":"data recover success please restart the app",
+    "import-unzip-fail" : "recover fail",
+    "export-success":"export success",
+    "export-fail":"export fail",
+    "export-success-sub":"data export success  choose the folder",
+    "import-filePath-failed":"failed at getting file in this path please switch to the another folder",
+    "select-folder":"select the folder to store save file"
   }
 }
